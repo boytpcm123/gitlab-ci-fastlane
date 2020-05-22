@@ -1,0 +1,20 @@
+stages:
+    - deploy
+variables:
+    LC_ALL: "en_US.UTF-8"
+    LANG: "en_US.UTF-8"
+before_script:
+    - bundle install --path vendor/bundle
+    - npm i
+    - cd ios/
+    - pod install
+deploy:
+    dependencies: []
+    stage: deploy
+    script:
+        - fastlane uploadIPA
+    tags:
+        - ios
+    only:
+        - build-dev
+

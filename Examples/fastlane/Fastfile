@@ -1,0 +1,63 @@
+MY_APP_ID = "com.example.app"
+SCHEME_DEV = "schemeDev"
+
+update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  lane :getCer do
+    get_certificates           # invokes cert
+    get_provisioning_profile   # invokes sigh
+  end
+  
+  lane :updateSigh do
+    cert
+    sigh(adhoc: true)
+  end
+
+  desc "upload to Beta by FireBase"
+  lane :uploadFirebaseDev do
+    firebase_app_distribution(
+        app: "1:664452671234:ios:5df5316d004bac5bf61234",
+        testers: “TESTER-EMAILS”,
+        groups: “TESTER-GROUP”,
+        release_notes: "Version Staging",
+        firebase_cli_token: "1//1234HjkYpldZ4CgYIARAAGBASNwF-1234whOlK0VPxN63LfLpqBG98TzhJ_1234v3e0mrE9PtCmketolYa7hhInJwj13UisBdEM",
+    )
+  end
+  
+  desc "install Cer And Provisioning"
+  lane :installCerAndProvisioning do
+    import_certificate(
+      keychain_name: "login",
+      certificate_path: "certs/dist.p12",
+      certificate_password: "123123",
+      keychain_password: "123123"
+    )
+    install_provisioning_profile(path: "certs/provisionadhoc.mobileprovision")
+  end
+  
+  desc "Archive build Ad Hoc"
+  lane :gymAppAdHoc do
+    disable_automatic_code_signing
+    update_project_provisioning(profile: "certs/provisionadhoc.mobileprovision", code_signing_identity: "Apple Distribution: Team Name (ABCDU8RR8X)")
+    gym(
+    scheme: SCHEME_DEV,
+    export_method: "ad-hoc")
+  end
+
+
+  desc "Push a new build to Fabric and FireBase App Distribution"
+  lane :uploadIPA do
+  
+    installCerAndProvisioning
+
+    gymAppAdHoc
+
+    uploadFirebaseDev
+
+  end
+
+
+end
