@@ -9,7 +9,7 @@
 
 # Quick start
 
-If you have ever worked on a project together with other people, perhaps you’ve had a situation in which you pulled some changes from a git repository and it turned out that something stopped working or the project stopped compiling. Continuous integration helps to avoid such problems. Automatic builds and tests execution after each commit are also useful when you are the only person working on a given project. With continuous integration, you can notice problems faster and fix them as soon as they appear.
+If you have ever worked on a project together with other people, perhaps you’ve had a situation in which you pulled some changes from a git repository and it turned out that something stopped working or the project stopped compiling. Continuous integration helps to avoid such problems. Automatic builds and test execution after each commit are also useful when you are the only person working on a given project. With continuous integration, you can notice problems faster and fix them as soon as they appear.
 
 ###### Machine environments
 
@@ -83,15 +83,15 @@ If you have ever worked on a project together with other people, perhaps you’v
 
 **CI/CD** generally refers to the combined practices of [continuous integration](https://en.wikipedia.org/wiki/Continuous_integration) and [continuous delivery](https://en.wikipedia.org/wiki/Continuous_delivery).
 
-Testing is an essential part of development process. Developers merge their changes back to the main branch as often as possible. The developer's changes are validated by creating a build and running some tests(Automation test). This entire process is what we call **Continuous Integration (CI)**.
+Testing is an essential part of the development process. Developers merge their changes back to the main branch as often as possible. The developer's changes are validated by creating a build and running some tests(Automation test). This entire process is what we call **Continuous Integration (CI)**.
 
-**Continuous delivery(CD)** is an extension of continuous integration to make sure that you can release new changes to your customers quickly in a sustainable way. This means, beside of having automated your testing, you also have automated your release process.
+**Continuous delivery(CD)** is an extension of continuous integration to make sure that you can release new changes to your customers quickly in a sustainable way. This means, besides of having automated your testing, you also have automated your release process.
 
 ![](Resources/CICD%20flow.png?raw=true)
 
 # 2. Fastlane:
 
-_fastlane_ is a tool for iOS and Android developers to automate tedious tasks like generating screenshots, dealing with provisioning profiles, and releasing your application.
+_Fastlane_ is a tool for iOS and Android developers to automate tedious tasks like generating screenshots, dealing with provisioning profiles, and releasing your application.
 
 ## 2.1 Getting Started:
 
@@ -122,7 +122,7 @@ You’ll also need _Xcode Command Line Tools (CLT)_. To ensure that they’re in
 xcode-select --install
 ```
 
-Now you’re ready to install fastlane! Enter the following command to do so:
+Now you’re ready to install Fastlane! Enter the following command to do so:
 
 ```bash
 brew install fastlane
@@ -134,35 +134,35 @@ Navigate your terminal to your iOS's directory and run
 fastlane init
 ```
 
-_fastlane_ will automatically detect your project, and ask for any missing information.
+_Fastlane_ will automatically detect your project, and ask for any missing information.
 
 > _Notes_: If you get a “permission denied” error, prefix this command with `sudo`.
 
-After some output, fastlane will ask: "What would you like to use fastlane for?"
+After some output, Fastlane will ask: "What would you like to use fastlane for?"
 
 ![](https://github.com/phhai1710/Fastlane-GitHub-Jenkins/blob/master/Resources/fastlane_init.png?raw=true)
 
-You should config fastlane file by ourself. Input **4** and tap **Enter**.
+You should config the Fastlane file by yourself. Input **4** and tap **Enter**.
 
-Back to project folder, you’ll see a few new things:
+Back to the project folder, you’ll see a few new things:
 
-- **Gemfile**: which includes the fastlane gem as a project dependency
+- **Gemfile**: which includes the Fastlane gem as a project dependency
 
-* **Appfile**: stores the app identifier, your Apple ID and any other identifying information that fastlane needs to set up your app.
+* **Appfile**: stores the app identifier, your Apple ID and any other identifying information that Fastlane needs to set up your app.
 * **Fastfile**: manages the _lanes_ you’ll create to invoke fastlane actions.
 
 ![](https://github.com/phhai1710/Fastlane-GitHub-Jenkins/blob/master/Resources/fastlane_file.png?raw=true)
 
 ### 2.1.2 Setup environment variables:
 
-_fastlane_ requires some environment variables set up to run correctly. In particular, having your locale not set to a UTF-8 locale will cause issues with building and uploading your build. In your shell profile add the following lines:
+_Fastlane_ requires some environment variables set up to run correctly. In particular, having your locale not set to a UTF-8 locale will cause issues with building and uploading your build. In your shell profile add the following lines:
 
 ```bash
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 ```
 
-## 2.2 Configuration fastlane:
+## 2.2 Configuration Fastlane:
 
 ### 2.2.1 Appfile
 
@@ -175,7 +175,7 @@ export LANG=en_US.UTF-8
 
 ```
 
-Remove the **#** in the beginning of the line to enable the options
+Remove the **#** at the beginning of the line to enable the options
 
 In case your account has multiple teams, add the following lines:
 
@@ -217,7 +217,7 @@ For more action, check out the [fastlane plugins](https://docs.fastlane.tools/pl
 
 ### 2.2.3 Build your app
 
-_fastlane_ takes care of building your app using an **action** called [_build_app_](https://docs.fastlane.tools/actions/build_app/) (alias for **_build_ios_app_**, or **_gym_**), just add the following to your **Fastfile**:
+_Fastlane_ takes care of building your app using an **action** called [_build_app_](https://docs.fastlane.tools/actions/build_app/) (alias for **_build_ios_app_**, or **_gym_**), just add the following to your **Fastfile**:
 
 ```bash
 gym(scheme: "YourScheme", export_method: "ad-hoc")
@@ -252,12 +252,12 @@ If everything works, you should have a `FastlanePlayground.ipa` file in the curr
 
 ### 2.2.4 Code Signing (Manually)
 
-Chances are that something went wrong because of code signing at the previous step. [Code Signing Guide](https://docs.fastlane.tools/codesigning/getting-started/) will helps you setting up the right code signing approach for your project.
+Chances are that something went wrong because of code signing at the previous step. [Code Signing Guide](https://docs.fastlane.tools/codesigning/getting-started/) will help you setting up the right code signing approach for your project.
 
 ###### Assumptions:
 
 - You are building your app on a macOS image that doesn't have your signing certificates or provisioning profiles installed.
-- You have password encrypted signing certificate downloaded to directory on your build machine
+- You have password encrypted signing certificate downloaded to the directory on your build machine
 - You have a mobile provisioning profile downloaded to a directory on your build machine
 - Automatic code signing is disabled in your Xcode project
 
@@ -297,7 +297,7 @@ desc "Archive build Ad Hoc"
 
 Here’s what this code does:
 
-1. Disable Automatically Code Signing, so you can use provisioning profile
+1. Disable Automatically Code Signing, so you can use the provisioning profile
 2. Set provisioning profile to build ad hoc
 3. Build scheme "YourScheme" with method "ad-hoc"
 
@@ -305,11 +305,11 @@ You can read more here [update_project_provisioning](https://docs.fastlane.tools
 
 ### 2.2.5 [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
 
-After building your app, it's ready to be uploaded to a beta testing service of your choice. The beauty of **fastlane** is that you can easily switch beta provider, or even upload to multiple at once, without any extra work.
+After building your app, it's ready to be uploaded to a beta testing service of your choice. The beauty of **Fastlane** is that you can easily switch beta provider, or even upload to multiple at once, without any extra work.
 
 [Firebase App Distribution](https://github.com/fastlane-community/fastlane-plugin-firebase_app_distribution) makes distributing your apps to trusted testers painless. By getting your apps onto testers' devices quickly, you can get feedback early and often. To learn more about Firebase App Distribution, go [here](https://firebase.google.com/docs/app-distribution).
 
-Because [Firebase App Distribution](https://github.com/fastlane-community/fastlane-plugin-firebase_app_distribution) is not a part of fastlane, so you need to install it as a [_Plugins_](https://docs.fastlane.tools/plugins/using-plugins/). Run this command:
+Because [Firebase App Distribution](https://github.com/fastlane-community/fastlane-plugin-firebase_app_distribution) is not a part of Fastlane, so you need to install it as a [_Plugins_](https://docs.fastlane.tools/plugins/using-plugins/). Run this command:
 
 ```bash
 fastlane add_plugin firebase_app_distribution
@@ -345,7 +345,7 @@ Then, your browser will open this link automatically to ask your permission
 
 ![img](Resources/firebase_auth.png)
 
-Print a new [refresh token](https://developers.google.com/identity/protocols/OAuth2). The current CLI session will not be affected. Store the output token in a secure but accessible way in your CI system. Use this token when setup in fastlane to upload IPA to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) 
+Print a new [refresh token](https://developers.google.com/identity/protocols/OAuth2). The current CLI session will not be affected. Store the output token in a secure but accessible way in your CI system. Use this token when setup in Fastlane to upload IPA to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) 
 
 Next is an important step, create a new lane in your Fastfile:
 
@@ -608,11 +608,11 @@ source "https://rubygems.org"
 gem "fastlane"
 ```
 
-### Creating a simple `.gitlab-ci.yml` file to trigger fastlane
+### Creating a simple `.gitlab-ci.yml` file to trigger Fastlane
 
 > **Note:** `.gitlab-ci.yml` is a [YAML](https://en.wikipedia.org/wiki/YAML) file so you have to pay extra attention to indentation. Always use spaces, not tabs.
 
-You need to create a file named `.gitlab-ci.yml` in the root directory of your repository. Below is an example for current tutorial:
+You need to create a file named `.gitlab-ci.yml` in the root directory of your repository. Below is an example of the current tutorial:
 
 ```
 stages:
@@ -698,9 +698,9 @@ Visit the [examples README](https://docs.gitlab.com/ee/ci/examples/README.html) 
 
 # 4. In closing…
 
-Hopefully this has been helpful and has inspired you to get iOS builds and publishing working within your GitLab project. There is some good additional [CI/CD best-practice](https://docs.fastlane.tools/best-practices/continuous-integration/) documentation for *fastlane* if you get stuck anywhere, and you could also consider using the `CI_BUILD_ID` (which increments each build) to [automatically increment a version](https://docs.fastlane.tools/best-practices/continuous-integration/gitlab/#auto-incremented-build-number).
+Hopefully, this has been helpful and has inspired you to get iOS builds and publishing working within your GitLab project. There is some good additional [CI/CD best-practice](https://docs.fastlane.tools/best-practices/continuous-integration/) documentation for *Fastlane* if you get stuck anywhere, and you could also consider using the `CI_BUILD_ID` (which increments each builds) to [automatically increment a version](https://docs.fastlane.tools/best-practices/continuous-integration/gitlab/#auto-incremented-build-number).
 
-Thanks to Gitlab.com we have our completely free CI and we have learned something about Fastlane tool. We also managed to create a mechanism for installing IPA straight from Gitlab, so we do not need to use any additional services and we have everything in one place. Of course, if we need something more advanced to publish our application, with the help of Fastlane we can easily add for example integration with Testflight. I encourage you to learn more about Fastlane and adapt the presented solution to your needs.
+Thanks to Gitlab.com we have our completely free CI and we have learned something about the Fastlane tool. We also managed to create a mechanism for installing IPA straight from Gitlab, so we do not need to use any additional services and we have everything in one place. Of course, if we need something more advanced to publish our application, with the help of Fastlane we can easily add for example integration with Testflight. I encourage you to learn more about Fastlane and adapt the presented solution to your needs.
 
 I hope this tutorial can be of great help to you during the iOS software development process, save time for you and your team.
 
