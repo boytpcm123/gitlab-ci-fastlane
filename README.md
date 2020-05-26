@@ -78,10 +78,14 @@ If you have ever worked on a project together with other people, perhaps you’v
 - https://medium.com/@phanquanghoang/https-medium-com-phanquanghoang-using-gitlab-ci-cd-fastlane-for-ios-project-part-2-f2c55bf6305e
 - https://medium.com/@phanquanghoang/using-gitlab-ci-cd-fastlane-for-ios-project-part-3-f710b618da4a
 - https://medium.com/@ryanisnhp/firebase-app-distribution-and-fastlane-5303c17b4395
+- https://medium.com/@clementozemoya/automated-android-deployments-with-fastlane-and-firebase-app-distribution-b1d1905a4fe6
+- https://medium.com/@pac_pac/how-to-auto-deploy-a-mobile-application-on-the-stores-with-gitlab-and-fastlane-608e44be3aac
 - https://dev.to/matt_catalfamo/how-to-build-and-manually-sign-an-ios-app-with-fastlane-2256
 - https://www.thejeremywhite.com/blog/2015/10/05/xcode-gitlab-ci-setup.html
 - https://about.gitlab.com/blog/2016/03/10/setting-up-gitlab-ci-for-ios-projects/
 - https://docs.gitlab.com/runner/
+- https://github.com/osamaq/reactnative-fastlane-appcenter
+- https://shift.infinite.red/simple-react-native-android-releases-319dc5e29605
 
 # 1. What is CI/CD?
 
@@ -486,7 +490,67 @@ Or you can refer in [available actions](https://docs.fastlane.tools/actions/)
 
 For more action, check out the [fastlane plugins](https://docs.fastlane.tools/plugins/available-plugins/) page. If you want to create your own action, check out the [local actions](https://docs.fastlane.tools/create-action/#local-actions) page.
 
-### 2.3.3 Build your app
+### 2.3.3 Signing
+
+Navigate to JDK binary. Find the binary with:
+
+```bash
+/usr/libexec/java_home
+```
+
+Generate keystore. Rename the key and alias.
+
+```bash
+sudo keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Move the key to your `android/app` directory.
+
+```bash
+sudo mv my-release-key.keystore [...path to YourAppName/android/app]
+```
+
+Create gradle variables by adding the following to `android/gradle.properties`:
+
+```bash
+MYAPP_RELEASE_STORE_FILE=my-release-key.keystore
+MYAPP_RELEASE_KEY_ALIAS=my-key-alias
+MYAPP_RELEASE_STORE_PASSWORD=*****
+MYAPP_RELEASE_KEY_PASSWORD=*****
+```
+
+You can change the names.
+
+Edit `android/app/build.gradle` and add the signing config and build variant:
+
+```ruby
+...
+android {
+    ...
+    defaultConfig { ... }
+    signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+    buildTypes {
+        release {
+            ...
+            signingConfig signingConfigs.release
+        }
+    }
+}
+...
+```
+
+Change the variable names according to the previous step. Done.
+
+### 2.3.4 Build your app
 
 _Fastlane_ takes care of building your app using an **action** called [_build_app_](http://docs.fastlane.tools/actions/build_android_app/#build_android_app) (alias for **gradle**), just add the following to your **Fastfile**:
 
@@ -535,9 +599,9 @@ And then, in **Terminal**, run:
 fastlane buildReleaseAPK
 ```
 
-If everything works, you should have a `app-develop-release.apk` file in the build outputs directory. 
+The build type has to be consistent with the build variant in the previous step. If everything works, you should have a `app-develop-release.apk` file in the build outputs directory. 
 
-### 2.3.4 [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
+### 2.3.5 [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
 
 After building your app, it's ready to be uploaded to a beta testing service of your choice. The beauty of **Fastlane** is that you can easily switch beta provider, or even upload to multiple at once, without any extra work.
 
