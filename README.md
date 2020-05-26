@@ -1,5 +1,5 @@
 <h1 align="center">
-  iOS Continuous Integration with GitLab CI, Fastlane
+  React Native Continuous Integration with GitLab CI, Fastlane
 </h1>
 
 <h3 align="center">
@@ -15,7 +15,7 @@ If you have ever worked on a project together with other people, perhaps you’v
 
 - [Homebrew](https://docs.brew.sh/Installation)
 
-  ```
+  ```shell
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   ```
 
@@ -23,13 +23,13 @@ If you have ever worked on a project together with other people, perhaps you’v
 
 * [Ruby](https://stackify.com/install-ruby-on-your-mac-everything-you-need-to-get-going/)
 
-  ```
+  ```shell
   brew install ruby
   ```
 
 * [Bundler](https://bundler.io/doc/troubleshooting.html)
 
-  ```
+  ```shell
   sudo gem install bundler
   ```
 
@@ -37,32 +37,38 @@ If you have ever worked on a project together with other people, perhaps you’v
 
   Install the latest Xcode command line tools:
 
-  ```
+  ```shell
   xcode-select --install
   ```
 
   Fix Missing Headers Compiling on macOS Mojave:
 
-  ```
+  ```shell
   open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg
+  ```
+
+* [Android SDK](https://gist.github.com/patrickhammond/4ddbe49a67e5eb1b9c03)
+
+  ```shell
+  brew cask install android-sdk
   ```
 
 * [Fastlane](https://docs.fastlane.tools/getting-started/ios/setup/)
 
-  ```
+  ```shell
   brew install fastlane
   ```
 
 * [Firebase CLI](https://firebase.google.com/docs/cli#mac-linux-npm)
 
-  ```
+  ```shell
   npm install -g firebase-tools
   ```
 
 ###### Prerequisites:
 
-- Knowledge of iOS build process
-- Knowledge of iOS code signing process
+- Knowledge of iOS and Android build process
+- Knowledge of iOS and Android code signing process
 - Basic understanding of Fastlane
 - Install Fastlane following their [recommended setup](https://docs.fastlane.tools/getting-started/ios/setup/)
 
@@ -128,7 +134,7 @@ Now you’re ready to install Fastlane! Enter the following command to do so:
 brew install fastlane
 ```
 
-Navigate your terminal to your iOS's directory and run
+Navigate your terminal to your ios directory or android directory and run:
 
 ```bash
 fastlane init
@@ -138,20 +144,41 @@ _Fastlane_ will automatically detect your project, and ask for any missing infor
 
 > _Notes_: If you get a “permission denied” error, prefix this command with `sudo`.
 
+###### [**IOS setup:**](https://docs.fastlane.tools/getting-started/ios/setup/)
+
 After some output, Fastlane will ask: "What would you like to use fastlane for?"
 
-![](https://github.com/phhai1710/Fastlane-GitHub-Jenkins/blob/master/Resources/fastlane_init.png?raw=true)
+![](Resources/fastlane_init_ios.png?raw=true)
 
 You should config the Fastlane file by yourself. Input **4** and tap **Enter**.
 
 Back to the project folder, you’ll see a few new things:
 
 - **Gemfile**: which includes the Fastlane gem as a project dependency
+- **Appfile**: stores the app identifier, your Apple ID and any other identifying information that Fastlane needs to set up your app.
+- **Fastfile**: manages the _lanes_ you’ll create to invoke fastlane actions.
 
-* **Appfile**: stores the app identifier, your Apple ID and any other identifying information that Fastlane needs to set up your app.
-* **Fastfile**: manages the _lanes_ you’ll create to invoke fastlane actions.
+![](Resources/fastlane_file_ios.png?raw=true)
 
-![](https://github.com/phhai1710/Fastlane-GitHub-Jenkins/blob/master/Resources/fastlane_file.png?raw=true)
+###### [**Android setup:**](https://docs.fastlane.tools/getting-started/android/setup/)
+
+You'll be asked to confirm that you're ready to begin, and then for a few pieces of information. To get started quickly:
+
+1. Provide the package name for your application when asked (e.g. io.fabric.yourapp)
+2. Press enter when asked for the path to your json secret file
+3. Answer 'n' when asked if you plan on uploading info to Google Play via fastlane (we can set this up later)
+
+![](Resources/fastlane_init_android.png?raw=true)
+
+That's it! _Fastlane_ will automatically generate a configuration for you based on the information provided.
+
+You can see the newly created `./fastlane` directory, with the following files:
+
+- **Gemfile**: This will clearly define the used _Fastlane_ version, and its dependencies, and will also speed up using _fastlane_.
+- **Appfile**: which defines configuration information that is global to your app
+- **Fastfile**: which defines the "lanes" that drive the behavior of _fastlane_
+
+![](Resources/fastlane_file_android.png?raw=true)
 
 ### 2.1.2 Setup environment variables:
 
@@ -162,7 +189,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 ```
 
-## 2.2 Configuration Fastlane:
+## 2.2 [Configuration Fastlane iOS:](https://docs.fastlane.tools/getting-started/ios/setup/)
 
 ### 2.2.1 Appfile
 
@@ -172,7 +199,6 @@ export LANG=en_US.UTF-8
 
 # For more information about the Appfile, see:
 #     https://docs.fastlane.tools/advanced/#appfile
-
 ```
 
 Remove the **#** at the beginning of the line to enable the options
@@ -284,7 +310,7 @@ desc "install Cer And Provisioning"
   end
 ```
 
-Now that the hard part is over we can call the *installCerAndProvisioning* function in the build lane before we build the app. The build lane will now look like this:
+Now that the hard part is over we can call the _installCerAndProvisioning_ function in the build lane before we build the app. The build lane will now look like this:
 
 ```bash
 desc "Archive build Ad Hoc"
@@ -321,19 +347,19 @@ Check that if in your Pluginfile like this
 
 Next, install **Firebase CLI** by running this in your terminal
 
-```
+```shell
 curl -sL firebase.tools | bash
 ```
 
 Sign in your account to authorize Firebase by running
 
-```
+```shell
 firebase login:ci
 ```
 
 and you can log out anytime by running with the following command line
 
-```
+```shell
 firebase logout
 ```
 
@@ -345,7 +371,7 @@ Then, your browser will open this link automatically to ask your permission
 
 ![img](Resources/firebase_auth.png)
 
-Print a new [refresh token](https://developers.google.com/identity/protocols/OAuth2). The current CLI session will not be affected. Store the output token in a secure but accessible way in your CI system. Use this token when setup in Fastlane to upload IPA to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) 
+Print a new [refresh token](https://developers.google.com/identity/protocols/OAuth2). The current CLI session will not be affected. Store the output token in a secure but accessible way in your CI system. Use this token when setup in Fastlane to upload IPA to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
 
 Next is an important step, create a new lane in your Fastfile:
 
@@ -384,27 +410,27 @@ If you put tester emails in your lane already, you no need to add testers again 
 
 There’re 3 milestones to show you who:
 
-```
+```shell
 Invited already but not accept your invitation yet
 Accepted your invitation but not install it yet
 ```
 
 With **TESTER-GROUP,** please make sure that you use a correct group id (not a group name)
 
-For example, I have a group name Worldwide Team, but in **Fastfile** I must input a **group ID**, as image below, we have *worldwide-team*
+For example, I have a group name Worldwide Team, but in **Fastfile** I must input a **group ID**, as image below, we have _worldwide-team_
 
 ![img](Resources/firebase_tester_group.png)
 
 Next is **RELEASE-NOTE,** yeah, it’s like What’s new for this beta app?
 
-### 2.2.5 [Final setup Fastlane](https://docs.fastlane.tools/advanced/lanes/)
+### 2.2.6 [Final setup Fastlane](https://docs.fastlane.tools/advanced/lanes/)
 
 Here final setup lane for all action above:
 
-```
+```shell
 desc "Push a new build to Fabric and FireBase App Distribution"
   lane :uploadIPA do
-  
+
     installCerAndProvisioning
 
     gymAppAdHoc
@@ -416,8 +442,215 @@ desc "Push a new build to Fabric and FireBase App Distribution"
 
 Now we will call all lanes with this command:
 
-```
+```shell
 fastlane uploadIPA
+```
+
+## 2.3 [Configuration Fastlane Android:](https://docs.fastlane.tools/getting-started/android/setup/)
+
+### 2.3.1 Appfile
+
+```ruby
+json_key_file("path/to/you/json/key/file") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("com.example.app") # e.g. com.krausefx.app
+```
+
+### 2.3.2 Fastfile - Lane configuration
+
+Open **Fastfile**, you will see something like this:
+
+```ruby
+default_platform(:android)
+
+platform :android do
+  desc "Description of what the lane does"                    # 1
+  lane :custom_lane do                                        # 2
+    # add actions here: https://docs.fastlane.tools/actions
+  end
+end
+```
+
+Here’s what this code does:
+
+1. Provides a description for the **lane**. A lane is a workflow of sequential tasks.
+2. Provides the **lane name** and the **actions**(tasks) of it.
+
+To get the most up-to-date information from the command line on your current version you can also run:
+
+```bash
+fastlane actions # list all available fastlane actions
+fastlane action [action_name] # more information for a specific action
+```
+
+Or you can refer in [available actions](https://docs.fastlane.tools/actions/)
+
+For more action, check out the [fastlane plugins](https://docs.fastlane.tools/plugins/available-plugins/) page. If you want to create your own action, check out the [local actions](https://docs.fastlane.tools/create-action/#local-actions) page.
+
+### 2.3.3 Build your app
+
+_Fastlane_ takes care of building your app using an **action** called [_build_app_](http://docs.fastlane.tools/actions/build_android_app/#build_android_app) (alias for **gradle**), just add the following to your **Fastfile**:
+
+```bash
+gradle(
+  task: "assemble",
+  flavor: "WorldDomination",
+  build_type: "Release"
+)
+```
+
+You can pass multiple gradle tasks:
+
+```bash
+gradle(
+  tasks: ["assembleDebug", "bundleDebug"]
+)
+```
+
+For example, You can use this to automatically [sign and zipalign](https://developer.android.com/studio/publish/app-signing.html) your app:
+
+```bash
+default_platform(:ios)
+
+platform :ios do
+  desc "Archive build Ad Hoc"
+  lane :buildReleaseAPK do
+    gradle(
+      task: "assemble",
+      build_type: "Release",
+      print_command: false,
+      properties: {
+        "android.injected.signing.store.file" => "keystore.jks",
+        "android.injected.signing.store.password" => "store_password",
+        "android.injected.signing.key.alias" => "key_alias",
+        "android.injected.signing.key.password" => "key_password",
+      }
+    )
+  end
+end
+```
+
+And then, in **Terminal**, run:
+
+```bash
+fastlane buildReleaseAPK
+```
+
+If everything works, you should have a `app-develop-release.apk` file in the build outputs directory. 
+
+### 2.3.4 [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
+
+After building your app, it's ready to be uploaded to a beta testing service of your choice. The beauty of **Fastlane** is that you can easily switch beta provider, or even upload to multiple at once, without any extra work.
+
+[Firebase App Distribution](https://github.com/fastlane-community/fastlane-plugin-firebase_app_distribution) makes distributing your apps to trusted testers painless. By getting your apps onto testers' devices quickly, you can get feedback early and often. To learn more about Firebase App Distribution, go [here](https://firebase.google.com/docs/app-distribution).
+
+Because [Firebase App Distribution](https://github.com/fastlane-community/fastlane-plugin-firebase_app_distribution) is not a part of Fastlane, so you need to install it as a [_Plugins_](https://docs.fastlane.tools/plugins/using-plugins/). Run this command:
+
+```bash
+fastlane add_plugin firebase_app_distribution
+```
+
+Check that if in your Pluginfile like this
+
+![img](Resources/fastlane_firebase_plugin.png)
+
+Next, install **Firebase CLI** by running this in your terminal
+
+```shell
+curl -sL firebase.tools | bash
+```
+
+Sign in your account to authorize Firebase by running
+
+```shell
+firebase login:ci
+```
+
+and you can log out anytime by running with the following command line
+
+```shell
+firebase logout
+```
+
+![img](Resources/firebase_cli.png)
+
+You can select Yes or No if you want to allow Firebase to collect your data. For me, I choose Yes because maybe Firebase will give us some reports about my apps
+
+Then, your browser will open this link automatically to ask your permission
+
+![img](Resources/firebase_auth.png)
+
+Print a new [refresh token](https://developers.google.com/identity/protocols/OAuth2). The current CLI session will not be affected. Store the output token in a secure but accessible way in your CI system. Use this token when setup in Fastlane to upload IPA to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
+
+Next is an important step, create a new lane in your Fastfile:
+
+```ruby
+desc "upload to Beta by FireBase"
+	lane :uploadFirebaseDev do
+    firebase_app_distribution(
+      app: "1:123452671234:android:1234e227e57f2fff61234",
+      testers: “TESTER-EMAILS”,
+      groups: “TESTER-GROUP”,
+      release_notes: "Version Staging",
+      apk_path: './app/build/outputs/apk/develop/release/app-develop-release.apk',
+      firebase_cli_token: "1//1234HjkYpldZ4CgYIARAAGBA1234-1234hOlK0VPxN63LfLpqBG98TzhJ_1234bv3e0mrE9PtCmketolYa7hhInJwj13UisBdEM",
+    )
+end
+```
+
+So, what’s **APP-ID** here
+
+Enter **Project settings** in firebase console
+
+![img](Resources/firebase_setting.png)
+
+Scroll down and you’ll see your **APP-ID** here
+
+![img](Resources/firebase_appid.png)
+
+Next is **TESTER-EMAILS,** back to your App Distribution and select the tab **Testers & Groups**
+
+![img](Resources/firebase_app_distribution.png)
+
+![img](Resources/firebase_view_all_tester.png)
+
+If you put tester emails in your lane already, you no need to add testers again manually in firebase console, like the image below, no need to add my testers again for each builds
+
+![img](Resources/firebase_add_tester.png)
+
+There’re 3 milestones to show you who:
+
+```shell
+Invited already but not accept your invitation yet
+Accepted your invitation but not install it yet
+```
+
+With **TESTER-GROUP,** please make sure that you use a correct group id (not a group name)
+
+For example, I have a group name Worldwide Team, but in **Fastfile** I must input a **group ID**, as image below, we have _worldwide-team_
+
+![img](Resources/firebase_tester_group.png)
+
+Next is **RELEASE-NOTE,** yeah, it’s like What’s new for this beta app?
+
+### 2.3.6 [Final setup Fastlane](https://docs.fastlane.tools/advanced/lanes/)
+
+Here final setup lane for all action above:
+
+```shell
+desc "Push a new build to Fabric and FireBase App Distribution"
+  lane :uploadAPK do
+
+    buildReleaseAPK
+
+    uploadFirebaseDev
+
+  end
+```
+
+Now we will call all lanes with this command:
+
+```shell
+fastlane uploadAPK
 ```
 
 # 3. [GitLab Runner](https://docs.gitlab.com/runner/)
@@ -443,7 +676,7 @@ NOTE: **Note:** For documentation on GitLab Runner 9 and earlier, [visit this do
 
 1. Download the binary for your system:
 
-   ```
+   ```shell
    sudo curl --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-amd64
    ```
 
@@ -451,7 +684,7 @@ NOTE: **Note:** For documentation on GitLab Runner 9 and earlier, [visit this do
 
 2. Give it permissions to execute:
 
-   ```
+   ```shell
    sudo chmod +x /usr/local/bin/gitlab-runner
    ```
 
@@ -463,20 +696,20 @@ NOTE: **Note:** For documentation on GitLab Runner 9 and earlier, [visit this do
 
    Run the following command:
 
-   ```
+   ```shell
    gitlab-runner register
    ```
 
    Enter your GitLab instance URL:
 
-   ```
+   ```shell
    Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com )
    https://gitlab.com
    ```
 
    Enter the token you obtained to register the Runner, You can get your token in **Gitlab Setting** -> **CI/CD** -> **Runner**:
 
-   ```
+   ```shell
    Please enter the gitlab-ci token for this runner
    xxx
    ```
@@ -485,47 +718,49 @@ NOTE: **Note:** For documentation on GitLab Runner 9 and earlier, [visit this do
 
    Enter a description for the Runner, you can change this later in GitLab’s UI:
 
-   ```
+   ```shell
    Please enter the gitlab-ci description for this runner
    [hostname] my-runner
    ```
 
    Enter the [tags associated with the Runner](https://docs.gitlab.com/ee/ci/runners/#using-tags), you can change this later in GitLab’s UI:
 
-   ```
+   ```shell
    Please enter the gitlab-ci tags for this runner (comma separated):
    my-tag,another-tag
    ```
 
    Enter the [Runner executor](https://docs.gitlab.com/runner/executors/README.html):
 
-   ```
+   ```shell
    Please enter the executor: ssh, docker+machine, docker-ssh+machine, kubernetes, docker, parallels, virtualbox, docker-ssh, shell:
    shell
    ```
 
-   As we can see, the registration command is specifying the `shell` executor. Let’s see what is the final configuration `~/.gitlab-runner/config.toml`  content:
+   As we can see, the registration command is specifying the `shell` executor. Let’s see what is the final configuration `~/.gitlab-runner/config.toml` content:
 
-   ```
-   concurrent = 1
-   check_interval = 0
+   ```yaml
+   concurrent = 1 #limits how many jobs globally can be run concurrently. The most upper limit of jobs using all defined runners. 0 does not mean unlimited
+   check_interval = 0 #defines the interval length, in seconds, between new jobs check. The default value is 3; if set to 0 or lower, the default value will be used.
    
    [session_server]
-     session_timeout = 1800
+     session_timeout = 1800 #How long in seconds the session can stay active after the job completes (which will block the job from finishing), defaults to 1800 (30 minutes).
    
    [[runners]]
-     name = "test-runner"
-     url = "https://gitlab.com"
-     token = "__REDACTED__"
-     executor = "shell"
+     name = "test-runner" #The name of the image to be run as a service
+     url = "https://gitlab.com" #GitLab URL
+     token = "__REDACTED__" #The Runner’s special token (not to be confused with the registration token)
+     executor = "shell" #run build locally, default
      [runners.cache]
        [runners.cache.s3]
        [runners.cache.gcs]
    ```
 
+   You can see more config [here](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
+
 2. Install the Runner as service and start it:
 
-   ```
+   ```shell
    cd ~
    gitlab-runner install
    gitlab-runner start
@@ -535,13 +770,13 @@ Runner is installed and will be run after a system reboot.
 
 You can verify this by running
 
-```
+```shell
 $ gitlab-ci-multi-runner verify
-WARNING: Running in user-mode.                     
+WARNING: Running in user-mode.
 WARNING: The user-mode requires you to manually start builds processing:
-WARNING: $ gitlab-runner run                       
-WARNING: Use sudo for system-mode:                 
-WARNING: $ sudo gitlab-runner...                   
+WARNING: $ gitlab-runner run
+WARNING: Use sudo for system-mode:
+WARNING: $ sudo gitlab-runner...
 
 Veryfing runner... is alive                         runner=25c780b3
 ```
@@ -550,13 +785,13 @@ Veryfing runner... is alive                         runner=25c780b3
 
 1. Stop the service:
 
-   ```
+   ```shell
    gitlab-runner stop
    ```
 
 2. Download the binary to replace the Runner's executable:
 
-   ```
+   ```shell
    sudo curl -o /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-amd64
    ```
 
@@ -564,23 +799,23 @@ Veryfing runner... is alive                         runner=25c780b3
 
 3. Give it permissions to execute:
 
-   ```
+   ```shell
    sudo chmod +x /usr/local/bin/gitlab-runner
    ```
 
 4. Start the service:
 
-   ```
+   ```bash
    gitlab-runner start
    ```
 
-Make sure that you read the [FAQ]() section which describes some of the most common problems with GitLab Runner.
+Make sure that you read the [FAQ]() section which describes some of the most common problems with GitLab Runner. You can see more commands [here](https://docs.gitlab.com/runner/commands/)
 
 ## Upgrade the service file
 
 In order to upgrade the `LaunchAgent` configuration, you need to uninstall and install the service:
 
-```
+```bash
 gitlab-runner uninstall
 gitlab-runner install
 gitlab-runner start
@@ -594,7 +829,7 @@ Before you create `.gitlab-ci.yml` let’s first explain in brief what this is a
 
 The `.gitlab-ci.yml` file is where you configure what CI does with your project. It lives in the root of your repository.
 
-On any push to your repository, GitLab will look for the `.gitlab-ci.yml` file and start jobs on *Runners* according to the contents of the file, for that commit.
+On any push to your repository, GitLab will look for the `.gitlab-ci.yml` file and start jobs on _Runners_ according to the contents of the file, for that commit.
 
 Because `.gitlab-ci.yml` is in the repository and is version controlled, old versions still build successfully, forks can easily make use of CI, branches can have different pipelines and jobs, and you have a single source of truth for CI. You can read more about the reasons why we are using `.gitlab-ci.yml` [here](https://about.gitlab.com/blog/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/).
 
@@ -602,7 +837,7 @@ Because `.gitlab-ci.yml` is in the repository and is version controlled, old ver
 
 First create a `Gemfile` in the root of your project with the following content:
 
-```
+```bash
 source "https://rubygems.org"
 
 gem "fastlane"
@@ -614,26 +849,38 @@ gem "fastlane"
 
 You need to create a file named `.gitlab-ci.yml` in the root directory of your repository. Below is an example of the current tutorial:
 
-```
-stages:
-    - deploy
-variables:
-    LC_ALL: "en_US.UTF-8"
-    LANG: "en_US.UTF-8"
-before_script:
-    - bundle install --path vendor/bundle
-    - npm i
+```yaml
+stages: #used to define stages that can be used by jobs and is defined globally
+  - deployiOS
+  - deployAndroid
+variables: #Set up environment values
+  LC_ALL: "en_US.UTF-8"
+  LANG: "en_US.UTF-8"
+before_script: #Override a set of commands that are executed before job.
+  - bundle install --path vendor/bundle 
+  - npm i #install node_modules for RN project
+deployiOS:
+  dependencies: []
+  stage: deployiOS
+  script: #scrip when work with current state
     - cd ios/
     - pod install
-deploy:
-    dependencies: []
-    stage: deploy
-    script:
-        - fastlane uploadIPA
-    tags:
-        - ios
-    only:
-        - build-dev
+    - fastlane uploadIPA
+  tags: #tag registered with gitlab-runner
+    - ios
+  only: #defines the names of branches and tags for which the job will run
+    - build-dev
+deployAndroid:
+  dependencies: []
+  stage: deployAndroid
+  script: #scrip when work with current state
+    - npx jetify
+    - cd android/
+    - fastlane uploadAPK
+  tags: #tag registered with gitlab-runner
+    - android
+  only: #defines the names of branches and tags for which the job will run
+    - build-dev
 ```
 
 This is the simplest possible configuration that will work for most React Native projects:
@@ -642,7 +889,7 @@ This is the simplest possible configuration that will work for most React Native
 2. Before every job, the commands defined by `before_script` are executed.
 3. We defined which branch will run this job by only: `build-dev`
 
-The `.gitlab-ci.yml` file defines sets of jobs with constraints of how and when they should be run. The jobs are defined as top-level elements with a name (in our case `deploy` ) and always have to contain the `script` keyword. Jobs are used to create jobs, which are then picked by [Runners](https://docs.gitlab.com/ee/ci/runners/README.html) and executed within the environment of the Runner.
+The `.gitlab-ci.yml` file defines sets of jobs with constraints of how and when they should be run. The jobs are defined as top-level elements with a name (in our case `deployiOS` and `deployAndroid`) and always have to contain the `script` keyword. Jobs are used to create jobs, which are then picked by [Runners](https://docs.gitlab.com/ee/ci/runners/README.html) and executed within the environment of the Runner.
 
 What is important is that each job is run independently from each other.
 
@@ -654,7 +901,7 @@ For more information and a complete `.gitlab-ci.yml` syntax, please read [the re
 
 Once you’ve created `.gitlab-ci.yml`, you should add it to your Git repository and push it to GitLab.
 
-```
+```shell
 git add .gitlab-ci.yml
 git commit -m "Add .gitlab-ci.yml"
 git push origin master
@@ -676,7 +923,7 @@ Notice that there is a pending job which is named after what we wrote in `.gitla
 
 ### Seeing the status of your pipeline and jobs
 
-After configuring the Runner successfully, you should see the status of your last commit change from *pending* to either *running*, *success* or *failed*.
+After configuring the Runner successfully, you should see the status of your last commit change from _pending_ to either _running_, _success_ or _failed_.
 
 You can view all pipelines by going to the **Pipelines** page in your project.
 
@@ -698,13 +945,8 @@ Visit the [examples README](https://docs.gitlab.com/ee/ci/examples/README.html) 
 
 # 4. In closing…
 
-Hopefully, this has been helpful and has inspired you to get iOS builds and publishing working within your GitLab project. There is some good additional [CI/CD best-practice](https://docs.fastlane.tools/best-practices/continuous-integration/) documentation for *Fastlane* if you get stuck anywhere, and you could also consider using the `CI_BUILD_ID` (which increments each builds) to [automatically increment a version](https://docs.fastlane.tools/best-practices/continuous-integration/gitlab/#auto-incremented-build-number).
+Hopefully, this has been helpful and has inspired you to get builds and publishing working within your GitLab project. There is some good additional [CI/CD best-practice](https://docs.fastlane.tools/best-practices/continuous-integration/) documentation for _Fastlane_ if you get stuck anywhere, and you could also consider using the `CI_BUILD_ID` (which increments each builds) to [automatically increment a version](https://docs.fastlane.tools/best-practices/continuous-integration/gitlab/#auto-incremented-build-number).
 
 Thanks to Gitlab.com we have our completely free CI and we have learned something about the Fastlane tool. We also managed to create a mechanism for installing IPA straight from Gitlab, so we do not need to use any additional services and we have everything in one place. Of course, if we need something more advanced to publish our application, with the help of Fastlane we can easily add for example integration with Testflight. I encourage you to learn more about Fastlane and adapt the presented solution to your needs.
 
-I hope this tutorial can be of great help to you during the iOS software development process, save time for you and your team.
-
-
-
-
-
+I hope this tutorial can be of great help to you during the software development process, save time for you and your team.

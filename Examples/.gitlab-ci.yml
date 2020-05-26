@@ -1,20 +1,31 @@
-stages:
-    - deploy
-variables:
-    LC_ALL: "en_US.UTF-8"
-    LANG: "en_US.UTF-8"
-before_script:
-    - bundle install --path vendor/bundle
-    - npm i
+stages: #used to define stages that can be used by jobs and is defined globally
+  - deployiOS
+  - deployAndroid
+variables: #Set up environment values
+  LC_ALL: "en_US.UTF-8"
+  LANG: "en_US.UTF-8"
+before_script: #Override a set of commands that are executed before job.
+  - bundle install --path vendor/bundle
+  - npm i #install node_modules for RN project
+deployiOS:
+  dependencies: []
+  stage: deployiOS
+  script: #scrip when work with current state
     - cd ios/
     - pod install
-deploy:
-    dependencies: []
-    stage: deploy
-    script:
-        - fastlane uploadIPA
-    tags:
-        - ios
-    only:
-        - build-dev
-
+    - fastlane uploadIPA
+  tags: #tag registered with gitlab-runner
+    - ios
+  only: #defines the names of branches and tags for which the job will run
+    - build-dev
+deployAndroid:
+  dependencies: []
+  stage: deployAndroid
+  script: #scrip when work with current state
+    - npx jetify
+    - cd android/
+    - fastlane uploadAPK
+  tags: #tag registered with gitlab-runner
+    - android
+  only: #defines the names of branches and tags for which the job will run
+    - build-dev

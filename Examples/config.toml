@@ -1,0 +1,14 @@
+concurrent = 1 #limits how many jobs globally can be run concurrently. The most upper limit of jobs using all defined runners. 0 does not mean unlimited
+check_interval = 0 #defines the interval length, in seconds, between new jobs check. The default value is 3; if set to 0 or lower, the default value will be used.
+
+[session_server]
+  session_timeout = 1800 #How long in seconds the session can stay active after the job completes (which will block the job from finishing), defaults to 1800 (30 minutes).
+
+[[runners]]
+  name = "test-runner" #The name of the image to be run as a service
+  url = "https://gitlab.com" #GitLab URL
+  token = "__REDACTED__" #The Runner’s special token (not to be confused with the registration token)
+  executor = "shell" #run build locally, default
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]

@@ -1,0 +1,59 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+
+  desc "Deploy a new version to the Firebase"
+
+  desc "build release APK"
+  lane :buildReleaseAPK do
+    store_password = "123456789"
+    key_password = "123456789"
+    key_alias = "abcdefgh"
+    releaseFilePath = "release.keystore"
+    gradle(task: 'clean')
+    gradle(
+      task: 'assemble',
+      build_type: 'Release',
+      print_command: false,
+      properties: {
+        "android.injected.signing.store.file" => releaseFilePath,
+        "android.injected.signing.store.password" => store_password,
+        "android.injected.signing.key.alias" => key_alias,
+        "android.injected.signing.key.password" => key_password,
+      }
+    )
+  end
+
+  desc "upload to Beta by FireBase"
+  lane :uploadFirebaseDev do
+    firebase_app_distribution(
+        app: "1:123452671234:android:1234e227e57f2fff61234",
+        testers: “TESTER-EMAILS”,
+        groups: “TESTER-GROUP”,
+        release_notes: "Version Staging",
+        apk_path: './app/build/outputs/apk/develop/release/app-develop-release.apk',
+        firebase_cli_token: "1//1234HjkYpldZ4CgYIARAAGBA1234-1234hOlK0VPxN63LfLpqBG98TzhJ_1234bv3e0mrE9PtCmketolYa7hhInJwj13UisBdEM",
+    )
+  end
+
+  desc "Build and push a new build to FireBase App Distribution"
+  lane :uploadAPK do
+    buildReleaseAPK
+    uploadFirebaseDev
+  end
+end

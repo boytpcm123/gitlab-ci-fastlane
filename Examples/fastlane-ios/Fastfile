@@ -19,7 +19,7 @@ platform :ios do
   desc "upload to Beta by FireBase"
   lane :uploadFirebaseDev do
     firebase_app_distribution(
-        app: "1:664452671234:ios:5df5316d004bac5bf61234",
+        app: "1:664452671234:ios:1234316d004bac5bf61234",
         testers: “TESTER-EMAILS”,
         groups: “TESTER-GROUP”,
         release_notes: "Version Staging",
