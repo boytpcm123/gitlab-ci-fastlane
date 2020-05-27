@@ -7,6 +7,34 @@
   </a>
 </h3>
 
+
+## Table of Contents
+
+- [Quick start](#quick-start)
+- [1. What is CI/CD?](#1-what-is-cicd)
+- [2. Fastlane:](#2-fastlane)
+  - [2.1 Getting Started:](#21-getting-started)
+    - [2.1.1 Setup Fastlane:](#211-setup-fastlane)
+    - [2.1.2 Setup environment variables:](#212-setup-environment-variables)
+  - [2.2 Configuration Fastlane iOS:](#22-configuration-fastlane-ios)
+    - [2.2.1 Appfile](#221-appfile)
+    - [2.2.2 Fastfile - Lane configuration](#222-fastfile---lane-configuration)
+    - [2.2.3 Build your app](#223-build-your-app)
+    - [2.2.4 Code Signing (Manually)](#224-code-signing-manually)
+    - [2.2.5 Firebase App Distribution](#225-firebase-app-distribution)
+    - [2.2.6 Final setup Fastlane](#226-final-setup-fastlane)
+  - [2.3 Configuration Fastlane Android:](#23-configuration-fastlane-android)
+    - [2.3.1 Appfile](#231-appfile)
+    - [2.3.2 Fastfile - Lane configuration](#232-fastfile---lane-configuration)
+    - [2.3.3 Signing](#233-signing)
+    - [2.3.4 Build your app](#234-build-your-app)
+    - [2.3.5 Firebase App Distribution](#235-firebase-app-distribution)
+    - [2.3.6 Final setup Fastlane](#236-final-setup-fastlane)
+- [3. GitLab Runner](#3-gitlab-runner)
+  - [3.1 Setup GitLab Runner](#31-setup-gitlab-runner)
+  - [3.2 Configuration GitLab Runner](#32-configuration-gitlab-runner)
+- [4. In closing…](#4-in-closing)
+
 # Quick start
 
 If you have ever worked on a project together with other people, perhaps you’ve had a situation in which you pulled some changes from a git repository and it turned out that something stopped working or the project stopped compiling. Continuous integration helps to avoid such problems. Automatic builds and test execution after each commit are also useful when you are the only person working on a given project. With continuous integration, you can notice problems faster and fix them as soon as they appear.
@@ -875,7 +903,7 @@ Veryfing runner... is alive                         runner=25c780b3
 
 Make sure that you read the [FAQ]() section which describes some of the most common problems with GitLab Runner. You can see more commands [here](https://docs.gitlab.com/runner/commands/)
 
-## Upgrade the service file
+### Upgrade the service file
 
 In order to upgrade the `LaunchAgent` configuration, you need to uninstall and install the service:
 
