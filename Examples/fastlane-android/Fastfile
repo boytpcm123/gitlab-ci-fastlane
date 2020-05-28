@@ -17,8 +17,6 @@ default_platform(:android)
 
 platform :android do
 
-  desc "Deploy a new version to the Firebase"
-
   desc "build release APK"
   lane :buildReleaseAPK do
     store_password = "123456789"

@@ -22,7 +22,8 @@
     - [2.2.3 Build your app](#223-build-your-app)
     - [2.2.4 Code Signing (Manually)](#224-code-signing-manually)
     - [2.2.5 Firebase App Distribution](#225-firebase-app-distribution)
-    - [2.2.6 Final setup Fastlane](#226-final-setup-fastlane)
+    - [2.2.6 Upload TestFlight](#226-upload-testflight)
+    - [2.2.7 Final setup Fastlane](#226-final-setup-fastlane)
   - [2.3 Configuration Fastlane Android:](#23-configuration-fastlane-android)
     - [2.3.1 Appfile](#231-appfile)
     - [2.3.2 Fastfile - Lane configuration](#232-fastfile---lane-configuration)
@@ -108,6 +109,7 @@ If you have ever worked on a project together with other people, perhaps you’v
 - https://medium.com/@ryanisnhp/firebase-app-distribution-and-fastlane-5303c17b4395
 - https://medium.com/@clementozemoya/automated-android-deployments-with-fastlane-and-firebase-app-distribution-b1d1905a4fe6
 - https://medium.com/@pac_pac/how-to-auto-deploy-a-mobile-application-on-the-stores-with-gitlab-and-fastlane-608e44be3aac
+- https://medium.com/coletiv-stories/ios-continuous-deployment-with-fastlane-36892ab66cb0
 - https://dev.to/matt_catalfamo/how-to-build-and-manually-sign-an-ios-app-with-fastlane-2256
 - https://www.thejeremywhite.com/blog/2015/10/05/xcode-gitlab-ci-setup.html
 - https://about.gitlab.com/blog/2016/03/10/setting-up-gitlab-ci-for-ios-projects/
@@ -339,6 +341,7 @@ desc "install Cer And Provisioning"
       keychain_password: "yourPasswordCerts"
     )
     install_provisioning_profile(path: "certs/adhoc.mobileprovision")
+    install_provisioning_profile(path: "certs/provisionAppStore.mobileprovision")
   end
 ```
 
@@ -348,8 +351,11 @@ Now that the hard part is over we can call the _installCerAndProvisioning_ funct
 desc "Archive build Ad Hoc"
   lane :gymAppAdHoc do
     disable_automatic_code_signing
-    update_project_provisioning(profile: "certs/adhoc.mobileprovision", code_signing_identity: "Apple Distribution: Team Name (ABCDU8RR8X)")
-    gym(scheme: "YourScheme", export_method: "ad-hoc")
+    update_project_provisioning(
+      profile: "certs/provisionAdhoc.mobileprovision", 
+      code_signing_identity: "Apple Distribution: Team Name (ABCDU8RR8X)"
+    )
+    gym(scheme: SCHEME_DEV,export_method: "ad-hoc")
   end
 ```
 
@@ -455,7 +461,50 @@ For example, I have a group name Worldwide Team, but in **Fastfile** I must inpu
 
 Next is **RELEASE-NOTE,** yeah, it’s like What’s new for this beta app?
 
-### 2.2.6 [Final setup Fastlane](https://docs.fastlane.tools/advanced/lanes/)
+### 2.2.6 [Upload TestFlight:](https://docs.fastlane.tools/actions/testflight/)
+
+#### Requirements 🎒
+
+- Create a new [Apple ID](https://appleid.apple.com/account) without 2FA. Avoid using your own account, its safer for you and easier to deliver the project along to your client or someone else. [**Fastlane supports 2FA**](https://docs.fastlane.tools/best-practices/continuous-integration/#two-step-or-two-factor-auth) but you will run into issues when managing the session token (**you should test it though!**);
+- Add the account to the project development team in [Apple Developer](https://developer.apple.com/) and [iTunesConnect](https://itunesconnect.apple.com/). 
+
+Define info account without 2FA can upload build to TestFlight:
+
+```shell
+desc "Define info account without 2FA can upload build to TestFlight"
+  before_all do
+    ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
+    ENV["FASTLANE_USER"] = "appleaccount@gmail.com"
+    ENV["FASTLANE_PASSWORD"] = "Abc12345678*"
+  end
+```
+
+Then we will archive build with method App Store. This setup will generate the .ipa file required for uploading the app to TestFlight
+
+```shell
+desc "Archive build production with method app store"
+  lane :buildAppProductionMethodAppStore do
+    disable_automatic_code_signing
+    update_project_provisioning(
+      profile: "certs/provisionAppStore.mobileprovision", 
+      code_signing_identity: "Apple Distribution: Team Name (ABCDU8RR8X)"
+    )
+    gym(scheme: SCHEME_PRODUCTION,export_method: "app-store")
+  end
+```
+
+Now we can upload IPA to TestFlight:
+
+```shell
+desc "Upload build production to Test Flight"
+  lane :uploadToTestFlight do
+    pilot(skip_waiting_for_build_processing: true)
+  end
+```
+
+You can see more config [here](https://docs.fastlane.tools/actions/testflight/)
+
+### 2.2.7 [Final setup Fastlane](https://docs.fastlane.tools/advanced/lanes/)
 
 Here final setup lane for all action above:
 
@@ -468,6 +517,10 @@ desc "Push a new build to Fabric and FireBase App Distribution"
     gymAppAdHoc
 
     uploadFirebaseDev
+    
+    buildAppProductionMethodAppStore
+    
+    uploadToTestFlight
 
   end
 ```
@@ -625,6 +678,14 @@ And then, in **Terminal**, run:
 
 ```bash
 fastlane buildReleaseAPK
+```
+
+**Note:**
+
+In **gradle-wrapper.properties** please use grade version 6.3 or above. Edit **gradle-wrapper.properties** file and replace distributionUrl with following value:
+
+```bash
+distributionUrl=https\://services.gradle.org/distributions/gradle-6.3-all.zip
 ```
 
 The build type has to be consistent with the build variant in the previous step. If everything works, you should have a `app-develop-release.apk` file in the build outputs directory. 

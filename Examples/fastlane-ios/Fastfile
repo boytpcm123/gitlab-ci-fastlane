@@ -1,11 +1,20 @@
 MY_APP_ID = "com.example.app"
 SCHEME_DEV = "schemeDev"
+SCHEME_PRODUCTION = "schemeProduction"
 
 update_fastlane
 
 default_platform(:ios)
 
 platform :ios do
+
+  desc "Define info account without 2FA can upload build to TestFlight"
+  before_all do
+    ENV["FASTLANE_DONT_STORE_PASSWORD"] = "1"
+    ENV["FASTLANE_USER"] = "appleaccount@gmail.com"
+    ENV["FASTLANE_PASSWORD"] = "Abc12345678*"
+  end
+
   lane :getCer do
     get_certificates           # invokes cert
     get_provisioning_profile   # invokes sigh
@@ -35,16 +44,33 @@ platform :ios do
       certificate_password: "123123",
       keychain_password: "123123"
     )
-    install_provisioning_profile(path: "certs/provisionadhoc.mobileprovision")
+    install_provisioning_profile(path: "certs/provisionAdhoc.mobileprovision")
+    install_provisioning_profile(path: "certs/provisionAppStore.mobileprovision")
   end
   
   desc "Archive build Ad Hoc"
   lane :gymAppAdHoc do
     disable_automatic_code_signing
-    update_project_provisioning(profile: "certs/provisionadhoc.mobileprovision", code_signing_identity: "Apple Distribution: Team Name (ABCDU8RR8X)")
-    gym(
-    scheme: SCHEME_DEV,
-    export_method: "ad-hoc")
+    update_project_provisioning(
+      profile: "certs/provisionAdhoc.mobileprovision", 
+      code_signing_identity: "Apple Distribution: Team Name (ABCDU8RR8X)"
+    )
+    gym(scheme: SCHEME_DEV,export_method: "ad-hoc")
+  end
+
+  desc "Archive build production with method app store"
+  lane :buildAppProductionMethodAppStore do
+    disable_automatic_code_signing
+    update_project_provisioning(
+      profile: "certs/provisionAppStore.mobileprovision", 
+      code_signing_identity: "Apple Distribution: Team Name (ABCDU8RR8X)"
+    )
+    gym(scheme: SCHEME_PRODUCTION,export_method: "app-store")
+  end
+
+  desc "Upload build production to Test Flight"
+  lane :uploadToTestFlight do
+    pilot(skip_waiting_for_build_processing: true)
   end
 
 
@@ -56,6 +82,10 @@ platform :ios do
     gymAppAdHoc
 
     uploadFirebaseDev
+
+    buildAppProductionMethodAppStore
+
+    uploadToTestFlight
 
   end
 
